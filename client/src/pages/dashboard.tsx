@@ -6,6 +6,8 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import { PersonList } from "@/components/person-list";
 import { PersonForm } from "@/components/person-form";
+import SettingsPage from "@/pages/settings";
+import SearchPage from "@/pages/search";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -162,49 +164,43 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <Button
             variant="outline"
-            className="h-auto p-6 flex flex-col items-start text-left"
+            className="h-auto p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start text-left space-y-2 sm:space-y-0 sm:space-x-4"
             onClick={() => window.location.href = "/persons/new"}
           >
-            <div className="flex items-center mb-4">
-              <div className="p-3 bg-blue-100 rounded-lg mr-4">
-                <UserPlus className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900">Add Person</h4>
-                <p className="text-sm text-gray-600">Create a new person record</p>
-              </div>
+            <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
+              <UserPlus className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div className="text-center sm:text-left">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100">Add Person</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400 hidden sm:block">Create a new person record</p>
             </div>
           </Button>
           
           <Button
             variant="outline"
-            className="h-auto p-6 flex flex-col items-start text-left"
-            onClick={() => window.location.href = "/"}
+            className="h-auto p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start text-left space-y-2 sm:space-y-0 sm:space-x-4"
+            onClick={() => window.location.href = "/search"}
           >
-            <div className="flex items-center mb-4">
-              <div className="p-3 bg-green-100 rounded-lg mr-4">
-                <Search className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900">Search & Filter</h4>
-                <p className="text-sm text-gray-600">Find specific person records</p>
-              </div>
+            <div className="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
+              <Search className="w-5 h-5 text-green-600 dark:text-green-400" />
+            </div>
+            <div className="text-center sm:text-left">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100">Search & Filter</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400 hidden sm:block">Find specific person records</p>
             </div>
           </Button>
           
           <Button
             variant="outline"
-            className="h-auto p-6 flex flex-col items-start text-left"
+            className="h-auto p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start text-left space-y-2 sm:space-y-0 sm:space-x-4"
             onClick={() => window.location.href = "/analytics"}
           >
-            <div className="flex items-center mb-4">
-              <div className="p-3 bg-purple-100 rounded-lg mr-4">
-                <BarChart3 className="w-5 h-5 text-purple-600" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900">View Analytics</h4>
-                <p className="text-sm text-gray-600">Analyze person data trends</p>
-              </div>
+            <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-lg">
+              <BarChart3 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+            </div>
+            <div className="text-center sm:text-left">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100">View Analytics</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400 hidden sm:block">Analyze person data trends</p>
             </div>
           </Button>
         </div>
@@ -250,15 +246,39 @@ export default function Dashboard() {
                 <PersonList />
               </Route>
               
+              <Route path="/search">
+                <SearchPage />
+              </Route>
+              
+              <Route path="/settings">
+                <SettingsPage />
+              </Route>
+              
+              <Route path="/analytics">
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                        Analytics Dashboard
+                      </h3>
+                      <p className="text-gray-500 dark:text-gray-400">
+                        Advanced analytics features are coming soon.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Route>
+              
               <Route>
                 <Card>
                   <CardContent className="pt-6">
                     <div className="text-center">
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">
-                        Page Under Construction
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                        Page Not Found
                       </h3>
-                      <p className="text-gray-500">
-                        This feature is coming soon.
+                      <p className="text-gray-500 dark:text-gray-400">
+                        The page you're looking for doesn't exist.
                       </p>
                     </div>
                   </CardContent>
