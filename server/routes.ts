@@ -5,6 +5,18 @@ import { insertPersonSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Configuration endpoint
+  app.get("/config", async (req, res) => {
+    try {
+      const apiBaseUrl = process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
+      res.json({
+        apiBaseUrl: apiBaseUrl
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // Person CRUD routes
   
   // Create person
