@@ -70,8 +70,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                   <div 
                     className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
                       isActive 
-                        ? 'text-indigo-600 bg-indigo-50' 
-                        : 'text-gray-700 hover:bg-gray-100'
+                        ? 'text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-indigo-900/30' 
+                        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
                     }`}
                     onClick={onClose}
                   >

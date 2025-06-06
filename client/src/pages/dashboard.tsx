@@ -209,7 +209,7 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900">
       <Sidebar 
         isOpen={sidebarOpen} 
         onClose={() => setSidebarOpen(false)} 
@@ -222,7 +222,7 @@ export default function Dashboard() {
           subtitle="Manage and analyze person data with ease"
         />
         
-        <main className="flex-1 overflow-y-auto bg-gray-50">
+        <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
           <div className="p-4 sm:p-6 lg:p-8">
             <Switch>
               <Route path="/">
