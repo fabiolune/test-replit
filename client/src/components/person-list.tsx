@@ -136,7 +136,6 @@ export function PersonList() {
           </div>
         </CardContent>
       </Card>
-
       {/* Results */}
       <Card>
         <CardContent className="pt-6">
@@ -183,7 +182,7 @@ export function PersonList() {
                 >
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-semibold text-[#e0e7ff]">
                         {person.firstName} {person.lastName}
                       </h3>
                       <Badge variant="secondary">ID: {person.id}</Badge>
