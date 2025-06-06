@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -31,6 +31,17 @@ export function PersonForm({ person, onSuccess }: PersonFormProps) {
       personalStatement: person?.personalStatement || "",
     },
   });
+
+  // Reset form when person data changes (for edit mode)
+  useEffect(() => {
+    if (person) {
+      form.reset({
+        firstName: person.firstName,
+        lastName: person.lastName,
+        personalStatement: person.personalStatement,
+      });
+    }
+  }, [person, form]);
 
   const createMutation = useMutation({
     mutationFn: async (data: InsertPerson) => {

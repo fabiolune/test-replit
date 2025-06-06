@@ -8,6 +8,7 @@ import { PersonList } from "@/components/person-list";
 import { PersonForm } from "@/components/person-form";
 import SettingsPage from "@/pages/settings";
 import SearchPage from "@/pages/search";
+import EditPersonPage from "@/pages/edit-person";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -190,8 +191,7 @@ export default function Dashboard() {
               
               <Route path="/persons/:id/edit">
                 {(params) => {
-                  // In a real app, you'd fetch the person data here
-                  return <PersonForm />;
+                  return <EditPersonPage personId={params.id} />;
                 }}
               </Route>
               
