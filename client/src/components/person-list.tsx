@@ -34,25 +34,6 @@ export function PersonList() {
     queryKey: searchQuery 
       ? ["/person/search", { q: searchQuery, page: currentPage, limit }]
       : ["/person/list", { page: currentPage, limit }],
-    queryFn: async ({ queryKey }) => {
-      const [endpoint, params] = queryKey as [string, any];
-      const searchParams = new URLSearchParams();
-      
-      if (params) {
-        Object.entries(params).forEach(([key, value]) => {
-          searchParams.append(key, String(value));
-        });
-      }
-      
-      const url = `${endpoint}?${searchParams.toString()}`;
-      const response = await fetch(url, { credentials: "include" });
-      
-      if (!response.ok) {
-        throw new Error(`${response.status}: ${response.statusText}`);
-      }
-      
-      return response.json();
-    },
     staleTime: 0, // Always refetch when component mounts
     refetchOnMount: true,
   });

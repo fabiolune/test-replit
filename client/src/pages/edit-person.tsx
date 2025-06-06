@@ -12,18 +12,7 @@ interface EditPersonPageProps {
 export default function EditPersonPage({ personId }: EditPersonPageProps) {
   // Fetch person data for editing
   const { data: person, isLoading, error } = useQuery<Person>({
-    queryKey: ["/person", personId],
-    queryFn: async () => {
-      const response = await fetch(`/person/${personId}`, { 
-        credentials: "include" 
-      });
-      
-      if (!response.ok) {
-        throw new Error(`${response.status}: ${response.statusText}`);
-      }
-      
-      return response.json();
-    },
+    queryKey: [`/person/${personId}`],
     enabled: !!personId, // Only fetch if personId exists
   });
 

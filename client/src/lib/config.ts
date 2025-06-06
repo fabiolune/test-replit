@@ -16,15 +16,17 @@ export async function getConfig(): Promise<Config> {
       throw new Error(`Failed to fetch config: ${response.status}`);
     }
     
-    cachedConfig = await response.json();
-    return cachedConfig!
+    const config: Config = await response.json();
+    cachedConfig = config;
+    return config;
   } catch (error) {
     console.error("Failed to load configuration:", error);
     // Fallback to current origin if config fails
-    cachedConfig = {
+    const fallbackConfig: Config = {
       apiBaseUrl: window.location.origin
     };
-    return cachedConfig!;
+    cachedConfig = fallbackConfig;
+    return fallbackConfig;
   }
 }
 
