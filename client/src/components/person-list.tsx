@@ -182,7 +182,7 @@ export function PersonList() {
                 >
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="font-semibold text-[#e0e7ff]">
+                      <h3 className="font-semibold text-[#111827]">
                         {person.firstName} {person.lastName}
                       </h3>
                       <Badge variant="secondary">ID: {person.id}</Badge>
