@@ -8,7 +8,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Person CRUD routes
   
   // Create person
-  app.post("/api/persons", async (req, res) => {
+  app.post("/person", async (req, res) => {
     try {
       const validatedData = insertPersonSchema.parse(req.body);
       const person = await storage.createPerson(validatedData);
@@ -23,7 +23,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get persons with pagination
-  app.get("/api/persons", async (req, res) => {
+  app.get("/person/list", async (req, res) => {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
@@ -46,8 +46,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get person count
+  app.get("/person/count", async (req, res) => {
+    try {
+      const total = await storage.getPersonsCount();
+      res.json({ count: total });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // Search persons
-  app.get("/api/persons/search", async (req, res) => {
+  app.get("/person/search", async (req, res) => {
     try {
       const query = req.query.q as string || "";
       const page = parseInt(req.query.page as string) || 1;
@@ -72,7 +82,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get single person
-  app.get("/api/persons/:id", async (req, res) => {
+  app.get("/person/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const person = await storage.getPerson(id);
@@ -89,7 +99,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update person
-  app.put("/api/persons/:id", async (req, res) => {
+  app.put("/person/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const validatedData = insertPersonSchema.partial().parse(req.body);
@@ -112,7 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete person
-  app.delete("/api/persons/:id", async (req, res) => {
+  app.delete("/person/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const deleted = await storage.deletePerson(id);

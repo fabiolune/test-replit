@@ -34,11 +34,12 @@ export function PersonForm({ person, onSuccess }: PersonFormProps) {
 
   const createMutation = useMutation({
     mutationFn: async (data: InsertPerson) => {
-      const response = await apiRequest("POST", "/api/persons", data);
+      const response = await apiRequest("POST", "/person", data);
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/persons"] });
+      queryClient.invalidateQueries({ queryKey: ["/person/list"] });
+      queryClient.invalidateQueries({ queryKey: ["/person/count"] });
       toast({
         title: "Success",
         description: "Person created successfully",
@@ -60,12 +61,14 @@ export function PersonForm({ person, onSuccess }: PersonFormProps) {
 
   const updateMutation = useMutation({
     mutationFn: async (data: InsertPerson) => {
-      const response = await apiRequest("PUT", `/api/persons/${person!.id}`, data);
+      const response = await apiRequest("PUT", `/person/${person!.id}`, data);
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/persons"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/persons", person!.id] });
+      queryClient.invalidateQueries({ queryKey: ["/person/list"] });
+      queryClient.invalidateQueries({ queryKey: ["/person/search"] });
+      queryClient.invalidateQueries({ queryKey: ["/person", person!.id] });
+      queryClient.invalidateQueries({ queryKey: ["/person/count"] });
       toast({
         title: "Success",
         description: "Person updated successfully",

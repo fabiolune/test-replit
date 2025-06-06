@@ -32,8 +32,8 @@ export function PersonList() {
   // Fetch persons with pagination
   const { data, isLoading, error } = useQuery<ApiResponse<Person[]>>({
     queryKey: searchQuery 
-      ? ["/api/persons/search", { q: searchQuery, page: currentPage, limit }]
-      : ["/api/persons", { page: currentPage, limit }],
+      ? ["/person/search", { q: searchQuery, page: currentPage, limit }]
+      : ["/person/list", { page: currentPage, limit }],
     queryFn: async ({ queryKey }) => {
       const [endpoint, params] = queryKey as [string, any];
       const searchParams = new URLSearchParams();
@@ -58,11 +58,12 @@ export function PersonList() {
   // Delete person mutation
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/persons/${id}`);
+      await apiRequest("DELETE", `/person/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/persons"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/persons/search"] });
+      queryClient.invalidateQueries({ queryKey: ["/person/list"] });
+      queryClient.invalidateQueries({ queryKey: ["/person/search"] });
+      queryClient.invalidateQueries({ queryKey: ["/person/count"] });
       toast({
         title: "Success",
         description: "Person deleted successfully",

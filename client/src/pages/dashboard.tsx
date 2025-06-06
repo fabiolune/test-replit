@@ -24,9 +24,23 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [location] = useLocation();
 
-  // Fetch statistics
+  // Fetch person count
+  const { data: countData } = useQuery({
+    queryKey: ["/person/count"],
+    queryFn: async () => {
+      const response = await fetch("/person/count", { credentials: "include" });
+      
+      if (!response.ok) {
+        throw new Error(`${response.status}: ${response.statusText}`);
+      }
+      
+      return response.json();
+    },
+  });
+
+  // Fetch recent persons for statistics
   const { data: statsData } = useQuery<ApiResponse<Person[]>>({
-    queryKey: ["/api/persons", { page: 1, limit: 1000 }],
+    queryKey: ["/person/list", { page: 1, limit: 100 }],
     queryFn: async ({ queryKey }) => {
       const [endpoint, params] = queryKey as [string, any];
       const searchParams = new URLSearchParams();
@@ -48,7 +62,7 @@ export default function Dashboard() {
     },
   });
 
-  const totalPersons = statsData?.pagination?.total || 0;
+  const totalPersons = countData?.count || 0;
   const persons = statsData?.data || [];
   
   // Calculate simple statistics
@@ -215,7 +229,7 @@ export default function Dashboard() {
         <main className="flex-1 overflow-y-auto bg-gray-50">
           <div className="p-4 sm:p-6 lg:p-8">
             <Switch>
-              <Route path="/" exact>
+              <Route path="/">
                 <StatsCards />
                 <QuickActions />
                 <PersonList />
