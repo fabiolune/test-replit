@@ -29,7 +29,7 @@ export function PersonList() {
   
   const limit = 10;
 
-  // Fetch persons with pagination
+  // Fetch persons with pagination - refetch when component mounts
   const { data, isLoading, error } = useQuery<ApiResponse<Person[]>>({
     queryKey: searchQuery 
       ? ["/person/search", { q: searchQuery, page: currentPage, limit }]
@@ -53,6 +53,8 @@ export function PersonList() {
       
       return response.json();
     },
+    staleTime: 0, // Always refetch when component mounts
+    refetchOnMount: true,
   });
 
   // Delete person mutation
@@ -156,11 +158,11 @@ export function PersonList() {
             </div>
           ) : persons.length === 0 ? (
             <div className="text-center py-12">
-              <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <Users className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
                 {searchQuery ? "No results found" : "No persons yet"}
               </h3>
-              <p className="text-gray-500 mb-4">
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
                 {searchQuery 
                   ? "Try adjusting your search terms"
                   : "Get started by adding your first person"
@@ -178,16 +180,16 @@ export function PersonList() {
               {persons.map((person) => (
                 <div
                   key={person.id}
-                  className="flex items-start justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-start justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="font-semibold text-[#111827]">
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100">
                         {person.firstName} {person.lastName}
                       </h3>
                       <Badge variant="secondary">ID: {person.id}</Badge>
                     </div>
-                    <p className="text-gray-600 text-sm line-clamp-2">
+                    <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2">
                       {person.personalStatement}
                     </p>
                   </div>
@@ -217,7 +219,7 @@ export function PersonList() {
           {/* Pagination */}
           {pagination && pagination.totalPages > 1 && (
             <div className="flex items-center justify-between mt-6 pt-6 border-t">
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-gray-600 dark:text-gray-300">
                 Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
                 {Math.min(pagination.page * pagination.limit, pagination.total)} of{" "}
                 {pagination.total} results

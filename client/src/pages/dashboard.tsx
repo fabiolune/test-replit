@@ -26,7 +26,7 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [location] = useLocation();
 
-  // Fetch person count
+  // Fetch person count - only when dashboard is active
   const { data: countData } = useQuery({
     queryKey: ["/person/count"],
     queryFn: async () => {
@@ -38,57 +38,28 @@ export default function Dashboard() {
       
       return response.json();
     },
-  });
-
-  // Fetch recent persons for statistics
-  const { data: statsData } = useQuery<ApiResponse<Person[]>>({
-    queryKey: ["/person/list", { page: 1, limit: 100 }],
-    queryFn: async ({ queryKey }) => {
-      const [endpoint, params] = queryKey as [string, any];
-      const searchParams = new URLSearchParams();
-      
-      if (params) {
-        Object.entries(params).forEach(([key, value]) => {
-          searchParams.append(key, String(value));
-        });
-      }
-      
-      const url = `${endpoint}?${searchParams.toString()}`;
-      const response = await fetch(url, { credentials: "include" });
-      
-      if (!response.ok) {
-        throw new Error(`${response.status}: ${response.statusText}`);
-      }
-      
-      return response.json();
-    },
+    enabled: location === "/", // Only fetch when on dashboard
   });
 
   const totalPersons = countData?.count || 0;
-  const persons = statsData?.data || [];
-  
-  // Calculate simple statistics
-  const avgStatementLength = persons.length > 0 
-    ? Math.round(persons.reduce((sum, p) => sum + p.personalStatement.length, 0) / persons.length)
-    : 0;
 
   const StatsCards = () => (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">
       <Card>
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Persons</p>
-              <p className="text-2xl font-bold text-gray-900">{totalPersons}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Persons</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{totalPersons}</p>
             </div>
-            <div className="p-3 bg-indigo-100 rounded-lg">
-              <Users className="w-5 h-5 text-indigo-600" />
+            <div className="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
+              <Users className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
-            <TrendingUp className="w-4 h-4 text-green-600 mr-1" />
-            <span className="text-green-600 font-medium">Active</span>
-            <span className="text-gray-600 ml-2">records</span>
+            <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400 mr-1" />
+            <span className="text-green-600 dark:text-green-400 font-medium">Active</span>
+            <span className="text-gray-600 dark:text-gray-400 ml-2">records</span>
           </div>
         </CardContent>
       </Card>
@@ -97,16 +68,16 @@ export default function Dashboard() {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Avg Statement Length</p>
-              <p className="text-2xl font-bold text-gray-900">{avgStatementLength}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">API Endpoints</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">6</p>
             </div>
-            <div className="p-3 bg-purple-100 rounded-lg">
-              <BarChart3 className="w-5 h-5 text-purple-600" />
+            <div className="p-3 bg-cyan-100 dark:bg-cyan-900 rounded-lg">
+              <Database className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
-            <span className="text-blue-600 font-medium">characters</span>
-            <span className="text-gray-600 ml-2">average</span>
+            <span className="text-blue-600 dark:text-blue-400 font-medium">REST API</span>
+            <span className="text-gray-600 dark:text-gray-400 ml-2">available</span>
           </div>
         </CardContent>
       </Card>
@@ -115,34 +86,16 @@ export default function Dashboard() {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Data Sources</p>
-              <p className="text-2xl font-bold text-gray-900">1</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Quick Actions</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">3</p>
             </div>
-            <div className="p-3 bg-cyan-100 rounded-lg">
-              <Database className="w-5 h-5 text-cyan-600" />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center text-sm">
-            <span className="text-blue-600 font-medium">Active</span>
-            <span className="text-gray-600 ml-2">connection</span>
-          </div>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Quick Actions</p>
-              <p className="text-2xl font-bold text-gray-900">4</p>
-            </div>
-            <div className="p-3 bg-emerald-100 rounded-lg">
-              <Share2 className="w-5 h-5 text-emerald-600" />
+            <div className="p-3 bg-emerald-100 dark:bg-emerald-900 rounded-lg">
+              <Share2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
-            <span className="text-green-600 font-medium">Available</span>
-            <span className="text-gray-600 ml-2">tools</span>
+            <span className="text-green-600 dark:text-green-400 font-medium">Available</span>
+            <span className="text-gray-600 dark:text-gray-400 ml-2">tools</span>
           </div>
         </CardContent>
       </Card>
