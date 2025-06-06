@@ -1,5 +1,4 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
-import { getConfig } from "./config";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -13,10 +12,7 @@ export async function apiRequest(
   endpoint: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const config = await getConfig();
-  const url = `${config.apiBaseUrl}${endpoint}`;
-  
-  const res = await fetch(url, {
+  const res = await fetch(endpoint, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
@@ -33,29 +29,39 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const config = await getConfig();
-    const [endpoint, params] = queryKey as [string, any];
-    
-    let url = `${config.apiBaseUrl}${endpoint}`;
-    
-    if (params) {
-      const searchParams = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
-        searchParams.append(key, String(value));
+    try {
+      const endpoint = queryKey[0] as string;
+      const params = queryKey[1] as any;
+      
+      let url = endpoint;
+      
+      if (params && typeof params === 'object') {
+        const searchParams = new URLSearchParams();
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            searchParams.append(key, String(value));
+          }
+        });
+        const paramString = searchParams.toString();
+        if (paramString) {
+          url += `?${paramString}`;
+        }
+      }
+      
+      const res = await fetch(url, {
+        credentials: "include",
       });
-      url += `?${searchParams.toString()}`;
-    }
-    
-    const res = await fetch(url, {
-      credentials: "include",
-    });
 
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
-    }
+      if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+        return null;
+      }
 
-    await throwIfResNotOk(res);
-    return await res.json();
+      await throwIfResNotOk(res);
+      return await res.json();
+    } catch (error) {
+      console.error('Query function error:', error);
+      throw error;
+    }
   };
 
 export const queryClient = new QueryClient({

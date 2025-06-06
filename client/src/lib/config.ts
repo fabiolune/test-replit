@@ -10,7 +10,16 @@ export async function getConfig(): Promise<Config> {
   }
 
   try {
+<<<<<<< HEAD
     const response = await fetch("/configuration", { credentials: "include" });
+=======
+    const response = await fetch("/config", { 
+      credentials: "include",
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+>>>>>>> 2e5f56c (Improve app stability, configuration loading, and interface aesthetics)
     
     if (!response.ok) {
       throw new Error(`Failed to fetch config: ${response.status}`);
@@ -20,7 +29,7 @@ export async function getConfig(): Promise<Config> {
     cachedConfig = config;
     return config;
   } catch (error) {
-    console.error("Failed to load configuration:", error);
+    console.error("Failed to load configuration, using fallback:", error);
     // Fallback to current origin if config fails
     const fallbackConfig: Config = {
       apiBaseUrl: window.location.origin
