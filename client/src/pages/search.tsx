@@ -7,44 +7,26 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Search, 
-  Users, 
+import {
+  Search,
+  Users,
   Filter,
   X,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
 } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [activeSearch, setActiveSearch] = useState("");
-  
+
   const limit = 10;
 
   // Fetch search results
   const { data, isLoading, error } = useQuery<ApiResponse<Person[]>>({
     queryKey: ["/person/search", { q: activeSearch, page: currentPage, limit }],
-    queryFn: async ({ queryKey }) => {
-      const [endpoint, params] = queryKey as [string, any];
-      const searchParams = new URLSearchParams();
-      
-      if (params) {
-        Object.entries(params).forEach(([key, value]) => {
-          searchParams.append(key, String(value));
-        });
-      }
-      
-      const url = `${endpoint}?${searchParams.toString()}`;
-      const response = await fetch(url, { credentials: "include" });
-      
-      if (!response.ok) {
-        throw new Error(`${response.status}: ${response.statusText}`);
-      }
-      
-      return response.json();
-    },
     enabled: activeSearch.length > 0, // Only run query when there's an active search
   });
 
@@ -107,7 +89,9 @@ export default function SearchPage() {
             </div>
             {activeSearch && (
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-muted-foreground">Searching for:</span>
+                <span className="text-sm text-muted-foreground">
+                  Searching for:
+                </span>
                 <Badge variant="secondary">{activeSearch}</Badge>
               </div>
             )}
@@ -126,7 +110,7 @@ export default function SearchPage() {
               </div>
               {pagination && (
                 <Badge variant="outline">
-                  {pagination.total} result{pagination.total !== 1 ? 's' : ''}
+                  {pagination.total} result{pagination.total !== 1 ? "s" : ""}
                 </Badge>
               )}
             </CardTitle>
@@ -141,7 +125,10 @@ export default function SearchPage() {
             ) : isLoading ? (
               <div className="space-y-4">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div
+                    key={i}
+                    className="flex items-center justify-between p-4 border rounded-lg"
+                  >
                     <div className="space-y-2 flex-1">
                       <Skeleton className="h-4 w-1/3" />
                       <Skeleton className="h-3 w-2/3" />
@@ -187,10 +174,13 @@ export default function SearchPage() {
               <div className="flex items-center justify-between mt-6 pt-6 border-t">
                 <div className="text-sm text-gray-600 dark:text-gray-300">
                   Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
-                  {Math.min(pagination.page * pagination.limit, pagination.total)} of{" "}
-                  {pagination.total} results
+                  {Math.min(
+                    pagination.page * pagination.limit,
+                    pagination.total
+                  )}{" "}
+                  of {pagination.total} results
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <Button
                     variant="outline"
@@ -201,23 +191,28 @@ export default function SearchPage() {
                     <ChevronLeft className="w-4 h-4" />
                     Previous
                   </Button>
-                  
+
                   <div className="flex items-center space-x-1">
-                    {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                      const page = i + 1;
-                      return (
-                        <Button
-                          key={page}
-                          variant={page === pagination.page ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handlePageChange(page)}
-                        >
-                          {page}
-                        </Button>
-                      );
-                    })}
+                    {Array.from(
+                      { length: Math.min(5, pagination.totalPages) },
+                      (_, i) => {
+                        const page = i + 1;
+                        return (
+                          <Button
+                            key={page}
+                            variant={
+                              page === pagination.page ? "default" : "outline"
+                            }
+                            size="sm"
+                            onClick={() => handlePageChange(page)}
+                          >
+                            {page}
+                          </Button>
+                        );
+                      }
+                    )}
                   </div>
-                  
+
                   <Button
                     variant="outline"
                     size="sm"
@@ -242,7 +237,10 @@ export default function SearchPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="text-sm text-muted-foreground space-y-2">
-              <p>• Search by first name, last name, or any part of the personal statement</p>
+              <p>
+                • Search by first name, last name, or any part of the personal
+                statement
+              </p>
               <p>• Search is case-insensitive</p>
               <p>• Use specific keywords for better results</p>
               <p>• Results are paginated to show 10 persons per page</p>

@@ -22,16 +22,17 @@ import {
   TrendingUp
 } from "lucide-react";
 import { useLocation, Route, Switch } from "wouter";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [location] = useLocation();
 
   // Fetch person count - only when dashboard is active
-  const { data: countData } = useQuery({
+  const { data: countData } = useQuery<ApiResponse<number>>({
     queryKey: ["/person/count"],
     queryFn: async () => {
-      const response = await fetch("/person/count", { credentials: "include" });
+      const response = await apiRequest("GET", "/person/count");
       
       if (!response.ok) {
         throw new Error(`${response.status}: ${response.statusText}`);
@@ -42,7 +43,7 @@ export default function Dashboard() {
     enabled: location === "/", // Only fetch when on dashboard
   });
 
-  const totalPersons = countData?.count || 0;
+  const totalPersons = countData?.data || 0;
 
   const StatsCards = () => (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">

@@ -14,13 +14,14 @@ export async function apiRequest(
   data?: unknown | undefined,
 ): Promise<Response> {
   const config = await getConfig();
-  const url = `${config.apiBaseUrl}${endpoint}`;
+  const baseUrl = config.apiBaseUrl.replace(/\/+$/, ''); 
+  const url = `${baseUrl}${endpoint}`;
   
   const res = await fetch(url, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
+    credentials: "omit",
   });
 
   await throwIfResNotOk(res);
@@ -35,10 +36,11 @@ export const getQueryFn: <T>(options: {
   async ({ queryKey }) => {
     try {
       const config = await getConfig();
+      const baseUrl = config.apiBaseUrl.replace(/\/+$/, ''); 
       const endpoint = queryKey[0] as string;
       const params = queryKey[1] as any;
       
-      let url = `${config.apiBaseUrl}${endpoint}`;
+      let url = `${baseUrl}${endpoint}`;
       
       if (params && typeof params === 'object') {
         const searchParams = new URLSearchParams();
@@ -54,7 +56,7 @@ export const getQueryFn: <T>(options: {
       }
       
       const res = await fetch(url, {
-        credentials: "include",
+        credentials: "omit",
       });
 
       if (unauthorizedBehavior === "returnNull" && res.status === 401) {
