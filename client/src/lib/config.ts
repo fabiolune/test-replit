@@ -10,7 +10,7 @@ export async function getConfig(): Promise<Config> {
   }
 
   try {
-    const response = await fetch("/config", { 
+    const response = await fetch("/configuration", { 
       credentials: "include",
       headers: {
         'Content-Type': 'application/json'
