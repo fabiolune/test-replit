@@ -1,4 +1,5 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { getConfig } from "./config";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -12,7 +13,10 @@ export async function apiRequest(
   endpoint: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const res = await fetch(endpoint, {
+  const config = await getConfig();
+  const url = `${config.apiBaseUrl}${endpoint}`;
+  
+  const res = await fetch(url, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
@@ -30,10 +34,11 @@ export const getQueryFn: <T>(options: {
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
     try {
+      const config = await getConfig();
       const endpoint = queryKey[0] as string;
       const params = queryKey[1] as any;
       
-      let url = endpoint;
+      let url = `${config.apiBaseUrl}${endpoint}`;
       
       if (params && typeof params === 'object') {
         const searchParams = new URLSearchParams();

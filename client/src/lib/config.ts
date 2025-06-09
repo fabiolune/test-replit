@@ -10,16 +10,12 @@ export async function getConfig(): Promise<Config> {
   }
 
   try {
-<<<<<<< HEAD
-    const response = await fetch("/configuration", { credentials: "include" });
-=======
     const response = await fetch("/config", { 
       credentials: "include",
       headers: {
         'Content-Type': 'application/json'
       }
     });
->>>>>>> 2e5f56c (Improve app stability, configuration loading, and interface aesthetics)
     
     if (!response.ok) {
       throw new Error(`Failed to fetch config: ${response.status}`);
