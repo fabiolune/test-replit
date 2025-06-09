@@ -9,7 +9,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/configuration", async (req, res) => {
     try {
       const apiBaseUrl = process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
-      console.log(process.env);
       res.json({
         apiBaseUrl: apiBaseUrl
       });
